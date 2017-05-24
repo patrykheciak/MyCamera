@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -47,6 +48,23 @@ public class MainActivity extends AppCompatActivity {
                 setGalleryButton();
             }
         });
+
+
+        handleExternalIntent();
+
+
+
+    }
+
+    private void handleExternalIntent() {
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
+
+        if (action.equals(Intent.ACTION_SEND) && type.startsWith("image")) {
+            Uri photoUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+            imageView.setImageURI(photoUri);
+        }
     }
 
     private void setGalleryButton() {
@@ -54,7 +72,9 @@ public class MainActivity extends AppCompatActivity {
         galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
         galleryIntent.setType("image/*");
         startActivityForResult(
-                Intent.createChooser(galleryIntent, "Choose photo"), REQUEST_CODE_PHOTO_GALLERY);
+                Intent.createChooser(galleryIntent, "Choose photo"),
+                REQUEST_CODE_PHOTO_GALLERY
+        );
 
     }
 
